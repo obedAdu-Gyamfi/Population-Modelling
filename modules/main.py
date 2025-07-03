@@ -1,25 +1,9 @@
 #!/usr/bin/env python3
 import numpy as np
-#from data import take_data
-from models import VerhulstModel, GompertzModel, RichardModel
+from data import take_data, write_data
+#from models import VerhulstModel, GompertzModel, RichardModel
+from region import Western, Central, GreatAccra, Volta, Eastern, Ashanti, BrongAhafo, Northern, UpperEast, UpperWest
 
-def take_data():
-    data = []
-    with open("western_data.dat","r") as file:
-        for i in file:
-            part = i.strip().split()
-            data.append(part[1])
-    refdata =[int(x) for x in data]
-    return (refdata)
-
-def write_data(data1=None,data2=None,data3=None):
-    input_data = take_data()
-    years = [1960,1970,1984,2000,2010]
-    with open("output.dat","w") as file:
-        file.write(f"#Year\t#Actual\t#Verh\tGomptz\tRichard\n")
-        for  a,b,c,d,e in zip(years, input_data, data1, data2,data3):
-            file.write(f"{a}\t{b}\t{c}\t{d}\t{e}\n")
-    print("Data written Successfully!")
 
 def MSE(data1=None, data2=None):
     if data1 is None or data2 is None:
@@ -35,23 +19,70 @@ def RelativeRMSE(actual=None, estimated=None):
     mean = np.mean(actual)
     return (RMSE(actual, estimated) / mean) * 100
 def main():
-    p = np.array(take_data())
-    t = np.arange(len(p))
-    p0 = p[0]
-    k0 = 5_000_000.0
+    wp,cp,gp,vp,ep,ap,bp,northp,uep,uwp = np.array(take_data())
 
+    k0 = 5_000_000.0
     r_init = 0.1
 
-    model = VerhulstModel(p, p0, k0, r_init, t)
-    model.fit()
-    model2 = GompertzModel(p, p0, k0, r_init, t)
-    model2.fit()
-    model3 = RichardModel(p,p0, k0, r_init, t, theta=1.0)
-    model3.fit()
-    data1 = model.predict()
-    data2 = model2.predict()
-    data3 = model3.predict()
-    write_data(data1,data2,data3)
+    wmodel = Western(wp, k0, r_init)
+    WestVerhulstData = wmodel.verhulst_model()
+    WestGompertzData = wmodel.gompertz_model()
+    WestRichadData = wmodel.richard_model()
+    write_data(wp,WestVerhulstData,WestGompertzData,WestRichadData,"Western")
+
+    cmodel = Central(cp, k0, r_init)
+    CentVerhulstData = cmodel.verhulst()
+    CentGompertzData = cmodel.gompertz()
+    CentRichardData = cmodel.richard()
+    write_data(cp,CentVerhulstData,CentGompertzData,CentRichardData,"Central")
+
+    gmodel = GreatAccra(gp, 6_000_000.00, r_init)
+    GreatVerhulstData = gmodel.verhulst()
+    GreatGompertzData = gmodel.gompertz()
+    GreatRichardData = gmodel.richard()
+    write_data(gp,GreatVerhulstData,GreatGompertzData,GreatRichardData,"GreaterAccra")
+
+    vmodel = Volta(vp, k0, r_init)
+    VoltaVerhulstData = vmodel.verhulst()
+    VoltaGompertzData = vmodel.gompertz()
+    VoltaRichardData = vmodel.richard()
+    write_data(vp,VoltaVerhulstData,VoltaGompertzData,VoltaRichardData,"Volta")
+
+    emodel = Eastern(ep, k0, r_init)
+    EastVerhulstData = emodel.verhulst()
+    EastGompertzData = emodel.gompertz()
+    EastRichardData = emodel.richard()
+    write_data(ep,EastVerhulstData,EastGompertzData,EastRichardData,"Eastern")
+
+    amodel = Ashanti(ap, 6_000_000.00, r_init)
+    AshVerhulstData = amodel.verhulst()
+    AshGompertzData = amodel.gompertz()
+    AshRichardData = amodel.richard()
+    write_data(ap,AshVerhulstData,AshGompertzData,AshRichardData,"Ashanti")
+
+    bmodel = BrongAhafo(bp, k0, r_init)
+    BraVerhulstData = bmodel.verhulst()
+    BraGompertzData = bmodel.gompertz()
+    BraRichardData = bmodel.richard()
+    write_data(bp,BraVerhulstData,BraGompertzData,BraRichardData,"BrongAhafo")
+
+    nmodel = Northern(northp, k0, r_init)
+    NorthVerhulstData = nmodel.verhulst()
+    NorthGompertzData = nmodel.gompertz()
+    NorthRichardData = nmodel.richard()
+    write_data(northp, NorthVerhulstData,NorthGompertzData,NorthRichardData,"Northern")
+
+    uemodel = UpperEast(uep, k0, r_init)
+    UEDVerhulstData = uemodel.verhulst()
+    UEDGompertzData = uemodel.gompertz()
+    UEDRichardData = uemodel.richard()
+    write_data(uep,UEDVerhulstData,UEDGompertzData,UEDRichardData,"UpperEast")
+
+    uwmodel = UpperWest(uwp, k0, r_init)
+    UWDVerhulstData = uwmodel.verhulst()
+    UWDGompertzData = uwmodel.gompertz()
+    UWDRichardData = uwmodel.richard()
+    write_data(uwp,UWDVerhulstData,UWDGompertzData,UWDRichardData,"UpperWest")
 
 if __name__ == "__main__":
     main()
