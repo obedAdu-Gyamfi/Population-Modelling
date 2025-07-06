@@ -1,0 +1,7 @@
+{
+  "Region": "Eastern",
+  "Model": "gompertz",
+  "MSE": 51104155196.0,
+  "RMSE": 226062.28167476325,
+  "Relative RMSE": 13.609483273180937
+}

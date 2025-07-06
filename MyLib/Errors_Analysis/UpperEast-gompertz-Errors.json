@@ -1,0 +1,7 @@
+{
+  "Region": "UpperEast",
+  "Model": "gompertz",
+  "MSE": 981104080.6,
+  "RMSE": 31322.581001571376,
+  "Relative RMSE": 4.1753709937432415
+}

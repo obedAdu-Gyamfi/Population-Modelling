@@ -1,0 +1,7 @@
+{
+  "Region": "GreaterAccra",
+  "Model": "gompertz",
+  "MSE": 99502220545.4,
+  "RMSE": 315439.725693198,
+  "Relative RMSE": 16.27603893441995
+}
