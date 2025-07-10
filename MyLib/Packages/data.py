@@ -3,11 +3,8 @@
 This module provides functions for reading and writing population data,
 as well as for writing error metrics to json files.
 """
-
-
-import numpy as np
-import json
 from .Error_Analysis import MSE, RMSE, RelativeRMSE
+
 
 def take_data():
     data1 = []
@@ -80,33 +77,22 @@ def write_data(org = None, vdata=None, gdata=None, rdata=None, region=""):
         print("[{}] {}".format(e.__class__.__name__, e))
 
 
-def write_error_metrics(org=None, predicted=None, model="",region="",filename=""):
+def write_error(orig=None, predicted=None, model=""):
     try:
-        if model == "":
+        if model is None:
             raise ValueError("<Model> cannot be None")
-        if org is None or predicted is None:
-            raise ValueError("<org> and <predicted> cannot be None")
-        if region == "":
-            raise ValueError("<Region> cannot be None")
-        mod = ["verhulst", "gompertz", "richard"]
-
-        for i in mod:
-            if model.lower() == i:
-                filename = region + "-" + i + "-" + "Errors.json"
-                model = i
-                break
-        with open(filename, "wt", encoding="utf-8") as file:
-            m = MSE(org, predicted)
-            rm = RMSE(org, predicted)
-            rrm = RelativeRMSE(org, predicted)
-            metrics = {
-                "Region": region,
-                "Model": model,
+        if orig is None or predicted is None:
+            raise ValueError("<orig> and <predicted> cannot be None")
+    
+        m = MSE(orig, predicted)
+        rm = RMSE(orig, predicted)
+        rrm = RelativeRMSE(orig, predicted)
+        metrics = {
                 "MSE": m,
                 "RMSE": rm,
                 "Relative RMSE": rrm
             }
-            json.dump(metrics, file, indent=2)
+        return metrics
     except ValueError as ve:
         print("[{}] {}".format(ve.__class__.__name__, ve))
     except Exception as e:

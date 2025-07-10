@@ -12,7 +12,7 @@ import json
 
 class RegionClass:
 
-    def __init__(self, p, k0=0, r_init=0, theta=1, region="", model=""):
+    def __init__(self, p, k0=0, r_init=0, theta=1, model=""):
         self.p0 = p[0]
         self.p = p
         self.k0 = k0
@@ -20,7 +20,7 @@ class RegionClass:
         self.theta = theta
         self.t = np.arange(len(self.p))
         self.model = model
-        self.region = region.lower()
+        
 
     def lmodel(self):
         try:
@@ -33,7 +33,7 @@ class RegionClass:
                     self.t
                     )
                 mymodel.theta = 0
-                path = self.region + "_" + "verhulst.json"
+                #path = self.region + "_" + "verhulst.json"
             elif self.model == "gompertz":
                 mymodel = GompertzModel(
                     self.p,
@@ -43,7 +43,8 @@ class RegionClass:
                     self.t
                     )
                 mymodel.theta = 0
-                path = self.region + " - " + "gompertz.json"
+
+                #path = self.region + " - " + "gompertz.json"
             elif self.model == "richard":
                 mymodel = RichardModel(
                     self.p,
@@ -53,25 +54,11 @@ class RegionClass:
                     self.t,
                     self.theta
                     )
-                path = self.region + "-" + "richard.json"
+                #path = self.region + "-" + "richard.json"
         except Exception as e:
             print("[{}] {}".format(e.__class__.__name__, e))
         mymodel.fit()
         data = mymodel.predict()
         params = {"k": mymodel.k, "r": mymodel.r, "theta": mymodel.theta}
-        p = np.array((self.p))
-        my_dict = {
-            "region": self.region,
-            "model": self.model,
-            "Parameters": params,
-            "Population": p.tolist(),
-            "Estimated": data
-            }
-
-        try:
-            with open(path, "wt", encoding="utf-8") as f:
-                packet = json.dumps(my_dict, indent=2)
-                f.write(packet)
-        except Exception as e:
-            print("[{}]{}".format(e.__class__.__name__, e))
-        return (data)
+        #p = np.array((self.p))
+        return (data, params)
