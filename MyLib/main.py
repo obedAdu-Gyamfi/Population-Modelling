@@ -8,6 +8,7 @@ from Packages import cases as case
 from Packages import db as db
 
 
+
 def main():
     wp, cp, gp, vp, ep, ap, bp, northp, uep, uwp = np.array(d.take_data())
     year = np.array((1960, 1970, 1984, 2000, 2010))
@@ -425,10 +426,9 @@ def main():
     d.write_data(wp, v, g, ri, "Western")
     
     my_file = db.read_db()
-    print(type(my_file))
-
-    for i in range(10):
-        print(f"[{my_file["region"][i].get("name")}] \t {my_file["region"][i].get("Errors")}")
+    l = [0,4]
+    for id in l:
+        print(f"[{my_file["region"][id].get("name")}] \t {my_file["region"][id].get("Errors")}")
 
 if __name__ == "__main__":
     main()
