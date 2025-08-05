@@ -42,7 +42,7 @@ def take_data():
     UWdata =[int(x) for x in data10]
     return (Wdata, Cdata, GAdata, Vdata, Edata, Adata, Bdata, Ndata, UEdata, UWdata)
 
-
+'''
 def write_data(org = None, vdata=None, gdata=None, rdata=None, region=""):
     years = [1960,1970,1984,2000,2010]
     if region == "":
@@ -51,7 +51,7 @@ def write_data(org = None, vdata=None, gdata=None, rdata=None, region=""):
         filename = "Western_output.dat"
     elif region == "Central":
         filename = "Central_output.dat"
-    elif region == "GreaterAccra":
+    elif region == "Greater Accra":
         filename = "GreaterAccra_output.dat"
     elif region == "Volta":
         filename = "Volta_output.dat"
@@ -59,13 +59,13 @@ def write_data(org = None, vdata=None, gdata=None, rdata=None, region=""):
         filename = "Eastern_output.dat"
     elif region == "Ashanti":
         filename = "Ashanti_output.dat"
-    elif region == "BrongAhafo":
+    elif region == "Brong Ahafo":
         filename = "BrongAhafo_output.dat"
     elif region == "Northern":
         filename = "Northern_output.dat"
-    elif region == "UpperWest":
+    elif region == "Upper West":
         filename = "UpperWest_output.dat"
-    elif region == "UpperEast":
+    elif region == "Upper East":
         filename = "UpperEast_output.dat"
     try:
         with open(filename, "wt", encoding="utf-8") as file:
@@ -75,7 +75,7 @@ def write_data(org = None, vdata=None, gdata=None, rdata=None, region=""):
 
     except Exception as e:
         print("[{}] {}".format(e.__class__.__name__, e))
-
+'''
 
 def write_error(orig=None, predicted=None, model=""):
     try:
@@ -95,5 +95,18 @@ def write_error(orig=None, predicted=None, model=""):
         return metrics
     except ValueError as ve:
         print("[{}] {}".format(ve.__class__.__name__, ve))
+    except Exception as e:
+        print("[{}] {}".format(e.__class__.__name__, e))
+
+
+def write_data(*args, filename):
+    try:
+        year = [1960, 1970, 1984, 2000, 2010]
+        with open(filename, "wt", encoding="utf-8") as file:
+            file.write(f"#Year \t #Popl \t #Verh \t #Gmpz \t #Rich\n")
+            for rows in zip(year, *args):
+                line = "\t".join(str(x) for x in rows)
+                #if line.strip():  # Check if the line is not empty
+                file.write(line + '\n')
     except Exception as e:
         print("[{}] {}".format(e.__class__.__name__, e))

@@ -23,9 +23,10 @@ class VerhulstModel:
         self.r = float(r)
         self.t = t
 
-    def model(self, k=None, r=None):
+    def model(self, k=None, r=None, t=None):
         k = self.k if k is None else k
         r = self.r if r is None else r
+        t = self.t if t is None else t
         A = (k - self.p0) / self.p0
         exp_term = np.exp(-r * self.t)
         return k / (1 + A * exp_term)
@@ -78,6 +79,15 @@ class VerhulstModel:
     def predict(self):
         est_p = self.model()
         return est_p.astype(int).tolist()
+    def fcast(self, years):
+        """
+        Forecasts the population for the next `years` years.
+        :param years: Number of years to forecast.
+        :return: List of forecasted populations.
+        """
+        future_t = np.arange(self.t[-1] + 1, self.t[-1] + 1 + years)
+        return self.model(k=self.k, r=self.r, t=future_t).astype(int).tolist()
+    
 
 
 class GompertzModel:
@@ -89,9 +99,10 @@ class GompertzModel:
         self.r = float(r)
         self.t = t
 
-    def model(self, k=None, r=None):
+    def model(self, k=None, r=None, t=None):
         k = self.k if k is None else k
         r = self.r if r is None else r
+        t = self.t if t is None else t
         return (k*np.exp(np.exp(-r * self.t)*np.log(self.p0/k)))
 
     def residuals(self, k=None, r=None):
@@ -142,6 +153,15 @@ class GompertzModel:
     def predict(self):
         est_p = self.model()
         return est_p.astype(int).tolist()
+    
+    def fcast(self,years):
+        """
+        Forecasts the population for the next `years` years.
+        :param years: Number of years to forecast.
+        :return: List of forecasted populations.
+        """
+        future_t = np.arange(self.t[-1] + 1, self.t[-1] + 1 + years)
+        return self.model(k=self.k, r=self.r, t=future_t).astype(int).tolist()
 
 
 class RichardModel:
@@ -153,15 +173,16 @@ class RichardModel:
         self.t = np.array(t, dtype=float)
         self.theta = float(theta)
 
-    def model(self, k=None, r=None, theta=None):
+    def model(self, k=None, r=None, theta=None, t=None):
         # Allow trial values for fitting
         try:
+            t = self.t if t is None else t
             K = self.k if k is None else k
             R = self.r if r is None else r
             TH = self.theta if theta is None else theta
 
             Q = (K / self.p0)**TH - 1
-            output = K / (1 + Q * np.exp(-R * TH * self.t))**(1/TH)
+            output = K /( (1 + Q * np.exp(-R * TH * self.t))**(1/TH))
             return output
         except ValueError:
             print("There was an error in the model parameters.")
@@ -255,3 +276,10 @@ class RichardModel:
     def predict(self):
         est = self.model()
         return est.astype(int).tolist()
+    def fcast(self, years):
+        """ Forecasts the population for the next `years` years.
+        :param years: Number of years to forecast.
+        :return: List of forecasted populations.
+        """
+        future_t = np.arange(self.t[-1] + 1, self.t[-1] + 1 + years)
+        return self.model(k=self.k, r=self.r, theta=self.theta, t=future_t).astype(int).tolist()
