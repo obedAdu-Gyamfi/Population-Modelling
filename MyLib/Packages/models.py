@@ -283,3 +283,24 @@ class RichardModel:
         """
         future_t = np.arange(self.t[-1] + 1, self.t[-1] + 1 + years)
         return self.model(k=self.k, r=self.r, theta=self.theta, t=future_t).astype(int).tolist()
+
+class forecast:
+
+    def __init__(self,p0, t, kwargs):
+        self.p0 =  p0
+        self.k = kwargs.get("k")
+        self.r = kwargs.get("r")
+        self.theta = kwargs.get("theta")
+        self.t = t
+
+    def vmodel(self):
+        A = (self.k - self.p0) / self.p0
+        exp_term = np.exp(-self.r * self.t)
+        return (self.k / (1 + A * exp_term)).tolist()
+    def gmodel(self):
+        return (self.k*np.exp(np.exp(-self.r * self.t)*np.log(self.p0/self.k))).tolist()
+
+    def rmodel(self):
+        Q = (self.k / self.p0)**self.theta - 1
+        output = self.k /( (1 + Q * np.exp(-self.r * self.theta * self.t))**(1/self.theta))
+        return output.tolist()
